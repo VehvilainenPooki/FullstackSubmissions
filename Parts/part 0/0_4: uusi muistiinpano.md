@@ -7,6 +7,9 @@ sequenceDiagram
 
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
+
+    Note right of browser: The browser POSTs the form to the server and the server send a verification of reception
+
     server-->>browser: received
     deactivate server
     
