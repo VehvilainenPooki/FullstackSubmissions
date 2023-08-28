@@ -13,31 +13,36 @@ const Statistics = ({good, neutral, bad}) => {
   return (
     <div>
       <h1>statistics</h1>
-      <StatisticLine text={"good"} value={good}/>
-      <StatisticLine text={"neutral"} value={neutral}/>
-      <StatisticLine text={"bad"} value={bad}/>
-      <StatisticLine text={"average"} value={<Average good={good} neutral={neutral} bad={bad}/>}/>
-      <StatisticLine text={"positive"} value={<Positive good={good} neutral={neutral} bad={bad}/>}/>
+      <table>
+        <tbody>
+          <StatisticLine text={"good"} value={good}/>
+          <StatisticLine text={"neutral"} value={neutral}/>
+          <StatisticLine text={"bad"} value={bad}/>
+          <StatisticLine text={"average"} value={<Average good={good} neutral={neutral} bad={bad}/>}/>
+          <StatisticLine text={"positive"} value={<Positive good={good} neutral={neutral} bad={bad}/>}/>
+        </tbody>
+      </table>
     </div>
   )
 }
 
 const StatisticLine = ({text, value}) => {
   return (
-    <div>
-      {text} {value}
-    </div>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
 const Average = ({good, neutral, bad}) => {
   const average = (good-bad)/(good+neutral+bad)
-  return (average)
+  return (Math.round(average*10)/10) //This rounding is so stupid, but tofixed() doesn't round correctly
 }
 
 const Positive = ({good, neutral, bad}) => {
   const positive = (good)/(good+neutral+bad)
-  return ((positive*100) + "%")
+  return (Math.round(positive*1000)/10 + "%") //This rounding is so stupid
 }
 
 
