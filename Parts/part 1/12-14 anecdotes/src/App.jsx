@@ -28,14 +28,18 @@ const App = () => {
     }
   }
 
+  let testi = ""
   let max = 0
   let maxIndex = 0
   for (let i = 0; i <= 7; i++) {
+    //testi = testi + votes[i]+" : "+anecdotes[i] + "\n"
     if (votes[i] > max) {
       max = votes[i]
       maxIndex = i
     }
   }
+
+  
 
   return (
     <div>
@@ -48,7 +52,7 @@ const App = () => {
       <br></br>
       
       <button onClick={() => {
-        //console.log(selected, votes)
+        console.log(selected, votes)
         const tb = [...votes]
         tb[selected] += 1
         setVotes(tb)
@@ -62,7 +66,16 @@ const App = () => {
       
       <h1>Anecdote with most votes</h1>
       {anecdotes[maxIndex]}
-      
+
+      {/*
+      <br></br>
+      <br></br>
+      <br></br>
+
+      {testi}
+      */
+      }
+
     </div>
   )
 }
