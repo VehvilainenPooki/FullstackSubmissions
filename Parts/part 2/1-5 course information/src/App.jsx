@@ -18,20 +18,15 @@ const Header = ({text}) => {
 
 const Content = ({parts}) => {
   return (
-    <div>
-      <Part text={parts[0].name}number={parts[0].exercises}/>
-      <Part text={parts[1].name}number={parts[1].exercises}/>
-      <Part text={parts[2].name}number={parts[2].exercises}/>
-    </div>
+    <ul>
+      {parts.map(part => <Part key={part.id} text={part.name} number={part.exercises}/>)}
+    </ul>
   )
 }
 
 const Part = ({text, number}) => {
   return (
-    <div>
-      <p>{text} {number}</p>
-      <p></p>
-    </div>
+    <div>{text}, {number}</div>
   )
 }
 
@@ -66,7 +61,6 @@ const App = () => {
       }
     ]
   }
-
   return (
     <div>
       <Course course={course}/>
