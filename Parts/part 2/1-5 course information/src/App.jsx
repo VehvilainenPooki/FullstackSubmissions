@@ -1,9 +1,6 @@
 
 const Course = ({course}) => {
-  let total = 0
-  course.parts.forEach(part => {
-    total += part.exercises
-  });
+  let total = course.parts.reduce((s, p) => s + p.exercises, 0, )
   
   return (
     <div>
