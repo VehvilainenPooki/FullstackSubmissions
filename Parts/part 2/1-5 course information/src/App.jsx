@@ -1,9 +1,15 @@
 
 const Course = ({course}) => {
+  let total = 0
+  course.parts.forEach(part => {
+    total += part.exercises
+  });
+  
   return (
     <div>
       <Header text={course.name}/>
       <Content parts={course.parts}/>
+      <b>Total of {total} Exercises</b>
      </div>
   )
 }
@@ -18,15 +24,17 @@ const Header = ({text}) => {
 
 const Content = ({parts}) => {
   return (
-    <ul>
+    <div>
       {parts.map(part => <Part key={part.id} text={part.name} number={part.exercises}/>)}
-    </ul>
+    </div>
   )
 }
 
 const Part = ({text, number}) => {
   return (
-    <div>{text}, {number}</div>
+    <div>
+      <p>{text} {number}</p>
+    </div>
   )
 }
 
@@ -58,6 +66,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
