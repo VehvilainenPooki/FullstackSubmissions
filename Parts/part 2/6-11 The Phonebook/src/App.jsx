@@ -28,12 +28,14 @@ const App = () => {
     event.preventDefault()
     
     if (persons.some(person => person.name === newName)) {
-      alert(newName + " is already added to phonebook")
+      alert(newName + " is already added to phonebook") 
     } else {
+      const newId = persons.length != 0 ? String(Number(persons.at(-1).id) + 1) : "1"
+
       const contactObject = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1,
+        id: newId,
       }
 
       personService
@@ -61,6 +63,23 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const handlePersonDelete = (event) => {
+    console.log(event.target.value)    
+
+    var deleteId = event.target.value
+
+    const deletePerson = persons.find((person) => person.id === deleteId)
+    if (window.confirm(`Delete ${deletePerson.name}?`) === false) {
+      return
+    }
+
+    personService
+    .deleteEntry(deleteId)
+    .then(() => {
+      setPersons(persons.filter(person => person.id !== deleteId))
+    })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -76,7 +95,7 @@ const App = () => {
           numberChange={handleNumberChange}
         />
       <h2>Numbers</h2>
-        <ListNumbers personList={persons} filter={newFilter}/>
+        <ListNumbers personList={persons} filter={newFilter} removeEvent={handlePersonDelete}/>
     </div>
   )
 }
