@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import AddForm from './components/AddForm'
 import ListNumbers from './components/listNumbers'
+import Notification from './components/Notification'
 
 import personService from './services/persons'
 
@@ -22,6 +23,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState('Some success happened...')
 
   
   const addContact = (event) => {
@@ -41,6 +43,7 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        handleNotificationSuccess(`${contactObject.name} number was changed successfully.`)
       }
     } else {
       const newId = persons.length != 0 ? String(Number(persons.at(-1).id) + 1) : "1"
@@ -58,6 +61,7 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      handleNotificationSuccess(`${contactObject.name} was added successfully.`)
     }
   }
 
@@ -93,6 +97,15 @@ const App = () => {
     })
   }
 
+  const handleNotificationSuccess = (notification) => {
+    setSuccessMessage(
+      `${notification}`
+    )
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -107,6 +120,9 @@ const App = () => {
           number={newNumber}
           numberChange={handleNumberChange}
         />
+
+      <Notification message={successMessage} />
+
       <h2>Numbers</h2>
         <ListNumbers personList={persons} filter={newFilter} removeEvent={handlePersonDelete}/>
     </div>
