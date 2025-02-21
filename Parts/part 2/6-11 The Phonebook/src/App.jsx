@@ -28,7 +28,20 @@ const App = () => {
     event.preventDefault()
     
     if (persons.some(person => person.name === newName)) {
-      alert(newName + " is already added to phonebook") 
+      if (window.confirm(newName + " is already added to phonebook, replace the old number with a new one?")) {
+        const contactObject = persons.find(person => person.name == newName)
+        console.log(contactObject)
+        contactObject.number = newNumber
+        console.log(contactObject)
+        personService
+        .update(contactObject.id, contactObject)
+        .then(() => {
+          persons[persons.findIndex(person => person.name == contactObject.name)] = contactObject
+          setPersons(persons)
+          setNewName('')
+          setNewNumber('')
+        })
+      }
     } else {
       const newId = persons.length != 0 ? String(Number(persons.at(-1).id) + 1) : "1"
 
