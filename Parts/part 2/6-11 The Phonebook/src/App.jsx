@@ -23,18 +23,19 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [successMessage, setSuccessMessage] = useState('Some success happened...')
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
-  
+
+
   const addContact = (event) => {
     event.preventDefault()
-    
+
     if (persons.some(person => person.name === newName)) {
       if (window.confirm(newName + " is already added to phonebook, replace the old number with a new one?")) {
         const contactObject = persons.find(person => person.name == newName)
-        console.log(contactObject)
         contactObject.number = newNumber
-        console.log(contactObject)
+
         personService
         .update(contactObject.id, contactObject)
         .then(() => {
@@ -42,8 +43,11 @@ const App = () => {
           setPersons(persons)
           setNewName('')
           setNewNumber('')
+          handleNotificationSuccess(`${contactObject.name} number was changed successfully.`)
+        }).catch(error => {
+          handleNotifications(`Entry not found on server.`, false)
+          console.log(`error: ${error}`)
         })
-        handleNotificationSuccess(`${contactObject.name} number was changed successfully.`)
       }
     } else {
       const newId = persons.length != 0 ? String(Number(persons.at(-1).id) + 1) : "1"
@@ -61,7 +65,7 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
-      handleNotificationSuccess(`${contactObject.name} was added successfully.`)
+      handleNotifications(`${contactObject.name} was added successfully.`, true)
     }
   }
 
@@ -94,16 +98,28 @@ const App = () => {
     .deleteEntry(deleteId)
     .then(() => {
       setPersons(persons.filter(person => person.id !== deleteId))
+    }).catch(error => {
+      handleNotifications(`Entry not found on server.`, false)
+      console.log(`error: ${error}`)
     })
   }
 
-  const handleNotificationSuccess = (notification) => {
-    setSuccessMessage(
-      `${notification}`
-    )
-    setTimeout(() => {
-      setSuccessMessage(null)
-    }, 5000)
+  const handleNotifications = (notification, successful) => {
+    if (successful) {
+      setSuccessMessage(
+        `${notification}`
+      )
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    } else {
+      setErrorMessage(
+        `${notification}`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   return (
@@ -113,7 +129,7 @@ const App = () => {
       <h2>add a new</h2>
         <AddForm
           submit={addContact}
-          
+
           name={newName}
           nameChange={handleNameChange}
 
@@ -121,7 +137,9 @@ const App = () => {
           numberChange={handleNumberChange}
         />
 
-      <Notification message={successMessage} />
+      <Notification message={successMessage} messageType={'success'} />
+      <Notification message={errorMessage} messageType={'error'}/>
+
 
       <h2>Numbers</h2>
         <ListNumbers personList={persons} filter={newFilter} removeEvent={handlePersonDelete}/>
