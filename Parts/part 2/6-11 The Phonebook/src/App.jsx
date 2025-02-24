@@ -30,8 +30,9 @@ const App = () => {
 
   const addContact = (event) => {
     event.preventDefault()
-
-    if (persons.some(person => person.name === newName)) {
+    if (newName == "" || newNumber == "") {
+      handleNotifications(`Name or number is empty.`, false)
+    } else if (persons.some(person => person.name === newName)) {
       if (window.confirm(newName + " is already added to phonebook, replace the old number with a new one?")) {
         const contactObject = persons.find(person => person.name == newName)
         contactObject.number = newNumber
