@@ -86,7 +86,7 @@ const App = () => {
   }
 
   const handlePersonDelete = (event) => {
-    console.log(event.target.value)    
+    console.log(event.target.value)
 
     var deleteId = event.target.value
 
