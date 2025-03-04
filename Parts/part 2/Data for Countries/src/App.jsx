@@ -48,11 +48,22 @@ const App = () => {
 		setCountries(tempList)
 	}
 
+	const handleShowCountryInfo = (event) => {
+		console.log(`Handling Click on open country info:\nFilter has narrowed search to ${event.target.value}`)
+		countryService
+		.getOne(event.target.value)
+		.then(response => {
+			console.log(`Promise fulfilled for ${event.target.value} info`)
+			setCountryInfo(response.data)
+			setShowCountryInfo(true)
+		})
+	}
+
 	return (
 		<div>
 		<h2>Country Info Viewer</h2>
 			<Filter filter={newFilter} change={handleFilterChange}/>
-			<ListCountries countryList={countries} removeEvent={null} showIfFalse={showCountryInfo}/>
+			<ListCountries countryList={countries} removeEvent={null} showIfFalse={showCountryInfo} showCountryInfoEvent={handleShowCountryInfo}/>
 			<p>Show Country info: {showCountryInfo.toString()}</p>
 			<CountryForSummary countryInfo={countryInfo} showIfTrue={showCountryInfo}/>
 		</div>

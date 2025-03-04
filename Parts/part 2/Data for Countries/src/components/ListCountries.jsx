@@ -1,4 +1,4 @@
-const ListCountries =({countryList, showIfFalse}) => {
+const ListCountries =({countryList, showIfFalse, showCountryInfoEvent}) => {
     if (countryList.length < 1 || countryList == undefined) {
         return <div></div>
     }
@@ -11,7 +11,7 @@ const ListCountries =({countryList, showIfFalse}) => {
     return (
         <ul>
             {countryList.map((country, index) => (
-                <li key={index}>{country}</li>
+                <li key={index}>{country} <button value={country} onClick={showCountryInfoEvent}>show</button></li>
             ))}
         </ul>
     )
