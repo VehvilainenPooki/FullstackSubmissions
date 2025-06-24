@@ -46,11 +46,24 @@ app.get('/api/persons', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const person = request.body
     if (!person || Object.keys(person).toString() != "name,number") {
-        response.status(400).end()
+        response.status(400).send({
+            error: "Malformed request body."
+        })
+    } else if (person.name == "" || person.number == "") {
+        response.status(400).send({
+            error: "Name or number is undefined"
+        })
     } else {
-        person.id = Math.floor(Math.random() * 9999)
-        persons.push(person)
-        response.json(persons)
+        if (persons.find(p => p.name == person.name)) {
+            response.status(409).send({
+                error: `${person.name} already exists in phonebook.`
+            })
+        } else {
+            console.log(5)
+            person.id = Math.floor(Math.random() * 9999)
+            persons.push(person)
+            response.json(persons)
+        }
     }
 })
 
@@ -58,7 +71,9 @@ app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
     const person = persons.find(p => p.id == id)
     if (!person) {
-        response.status(404).end()
+        response.status(404).send({
+            error: `Person with id: ${id} not found.`
+        })
     }
     response.json(person)
 })
@@ -67,9 +82,10 @@ app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
     const person = persons.find(p => p.id == id)
     if (!person) {
-        response.status(404).end()
+        response.status(404).send({
+            error: `person with id: ${id} not found.`
+        })
     }
-
     persons = persons.filter(p => p.id !== id)
     response.status(204).end()
 })
