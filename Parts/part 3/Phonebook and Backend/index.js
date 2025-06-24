@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-let notes = [
+let persons = [
     { 
         "id": "1",
         "name": "Arto Hellas", 
@@ -30,7 +30,7 @@ app.get('/info', (request, response) => {
         dateStyle: "full"
     };
     response.send(
-        `<p>Phonebook has info for ${notes.length} people</p>\n
+        `<p>Phonebook has info for ${persons.length} people</p>\n
         \n
         ${(new Date()).toLocaleString("en-GB", options)}
         `
@@ -38,7 +38,13 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(notes)
+    response.json(persons)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+    const id = request.params.id
+    const person = persons.find(p => p.id == id)
+    response.json(person)
 })
 
 const PORT = 3001
