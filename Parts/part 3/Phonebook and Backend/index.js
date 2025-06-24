@@ -24,6 +24,19 @@ let notes = [
     }
 ]
 
+app.get('/info', (request, response) => {
+    const options = {
+        timeStyle: "full",
+        dateStyle: "full"
+    };
+    response.send(
+        `<p>Phonebook has info for ${notes.length} people</p>\n
+        \n
+        ${(new Date()).toLocaleString("en-GB", options)}
+        `
+    )
+})
+
 app.get('/api/persons', (request, response) => {
     response.json(notes)
 })
