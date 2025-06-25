@@ -68,7 +68,6 @@ app.post('/api/persons', (request, response) => {
                 error: `${person.name} already exists in phonebook.`
             })
         } else {
-            console.log(5)
             person.id = Math.floor(Math.random() * 9999)
             persons.push(person)
             response.json(persons)
