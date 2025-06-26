@@ -51,12 +51,9 @@ const App = () => {
         })
       }
     } else {
-      const newId = persons.length != 0 ? String(Number(persons.at(-1).id) + 1) : "1"
-
       const contactObject = {
         name: newName,
         number: newNumber,
-        id: newId,
       }
 
       personService
