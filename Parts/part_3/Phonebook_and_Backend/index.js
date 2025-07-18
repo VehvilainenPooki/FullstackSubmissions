@@ -84,14 +84,15 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(p => p.id == id)
+    Person.findById(request.params.id).then(person => {
     if (!person) {
         response.status(404).send({
             error: `Person with id: ${id} not found.`
         })
     }
+
     response.json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
