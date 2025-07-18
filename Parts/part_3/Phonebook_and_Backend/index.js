@@ -71,15 +71,14 @@ app.post('/api/persons', (request, response) => {
             error: "Name or number is undefined"
         })
     } else {
-        if (persons.find(p => p.name == person.name)) {
-            response.status(409).send({
-                error: `${person.name} already exists in phonebook.`
-            })
-        } else {
-            person.id = Math.floor(Math.random() * 9999)
-            persons.push(person)
-            response.json(persons)
-        }
+        const newPerson = new Person({
+            name: person.name,
+            number: person.number
+        })
+        newPerson.save().then(savedPerson => {
+            console.log("Person saved to database")
+            response.json(savedPerson)
+        })
     }
 })
 
