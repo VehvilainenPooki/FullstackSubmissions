@@ -35,11 +35,14 @@ const App = () => {
     } else if (persons.some(person => person.name === newName)) {
       if (window.confirm(newName + " is already added to phonebook, replace the old number with a new one?")) {
         const contactObject = persons.find(person => person.name == newName)
-        contactObject.number = newNumber
+        const updatedContact = { ...contactObject, number: newNumber }
 
-        personService
-        .update(contactObject.id, contactObject)
-        .then(() => {
+          personService
+            .update(contactObject.id, updatedContact)
+            .then(() => {
+              setPersons(persons.map(person =>
+                person.id !== contactObject.id ? person : updatedContact
+              ))
           persons[persons.findIndex(person => person.name == contactObject.name)] = contactObject
           setPersons(persons)
           setNewName('')
