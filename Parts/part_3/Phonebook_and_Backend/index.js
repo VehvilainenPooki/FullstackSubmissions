@@ -41,58 +41,31 @@ app.get('/api/persons', (request, response) => {
     
 })
 
-app.post('/api/persons', (request, response) => {
-    const person = request.body
-    if (!person || Object.keys(person).toString() != "name,number") {
-        response.status(400).send({
-            error: "Malformed request body."
-        })
-    } else if (person.name == "" || person.number == "") {
-        response.status(400).send({
-            error: "Name or number is undefined"
-        })
-    } else {
-        const newPerson = new Person({
-            name: person.name,
-            number: person.number
-        })
-        newPerson.save().then(savedPerson => {
-            console.log("Person saved to database")
-            response.json(savedPerson)
-        })
-    }
+app.post('/api/persons', (request, response, next) => {
+    const newPerson = new Person({
+        name: request.body.name,
+        number: request.body.number
+    })
+    newPerson.save().then(savedPerson => {
+        console.log("Person saved to database")
+        response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id).then(person => {
-        if (!person) {
-            response.status(404).send({
-                error: `Person with id: ${request.params.id} not found.`
-            })
-        }
         response.json(person)
     })
     .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const person = request.body
-    console.log(person)
-    if (!person || Object.keys(person).toString() != "name,number,id") {
-        response.status(400).send({
-            error: "Malformed request body."
-        })
-    } else if (person.name == "" || person.number == "") {
-        response.status(400).send({
-            error: "Name or number is undefined"
-        })
-    } else {
-        Person.findByIdAndUpdate(request.params.id, {number: person.number})
-        .then(result => {
-            response.status(204).end()
-        })
-        .catch(error => next(error))
-    }
+    Person.findByIdAndUpdate(request.params.id, {number: request.body.number}, opts)
+    .then(result => {
+        response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
