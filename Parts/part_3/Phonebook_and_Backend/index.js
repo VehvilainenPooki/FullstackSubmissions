@@ -73,6 +73,26 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+    const person = request.body
+    console.log(person)
+    if (!person || Object.keys(person).toString() != "name,number,id") {
+        response.status(400).send({
+            error: "Malformed request body."
+        })
+    } else if (person.name == "" || person.number == "") {
+        response.status(400).send({
+            error: "Name or number is undefined"
+        })
+    } else {
+        Person.findByIdAndUpdate(request.params.id, {number: person.number})
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
+    }
+})
+
 app.delete('/api/persons/:id', (request, response) => {
     Person.findByIdAndDelete(request.params.id)
     .then(result => {
