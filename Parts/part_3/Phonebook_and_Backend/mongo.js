@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-if (process.argv.length != 3 && process.argv.length != 5) {
+if (process.argv.length !== 3 && process.argv.length !== 5) {
     console.log('Wrong number of argument')
     process.exit(1)
 
@@ -18,24 +18,24 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', personSchema)
 
-if (process.argv.length == 3) {
+if (process.argv.length === 3) {
     Person.find({}).then(result => {
-        var phonebook = "Phonebook:"
+        var phonebook = 'Phonebook:'
         result.forEach(person => {
             phonebook = phonebook.concat(`\n${person.name} ${person.number}`)
-        });
+        })
         console.log(phonebook)
         mongoose.connection.close()
     })
 
- } else if (process.argv.length == 5) {
+} else if (process.argv.length === 5) {
     const person = new Person({
         name: process.argv[3],
         number: process.argv[4],
     })
 
     person.save().then(result => {
-        console.log('Add', result.name, "number", result.number, "to phonebook")
+        console.log('Add', result.name, 'number', result.number, 'to phonebook')
         mongoose.connection.close()
     })
 }
