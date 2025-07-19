@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
+/* Moved to index.js so it is run only once
 const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
@@ -13,6 +14,7 @@ mongoose.connect(url)
     .catch(error => {
         console.log('error connecting to MongoDB:', error.message)
     })
+*/
 
 const personSchema = new mongoose.Schema({
     name: {

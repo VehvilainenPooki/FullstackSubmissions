@@ -3,6 +3,19 @@ const cors = require('cors')
 const morgan = require('morgan')
 const express = require('express')
 require('dotenv').config()
+
+const mongoose = require('mongoose')
+
+const url = process.env.MONGODB_URI
+console.log('connecting to', url)
+mongoose.connect(url)
+    .then(() => {
+        console.log('connected to MongoDB')
+    })
+    .catch(error => {
+        console.log('error connecting to MongoDB:', error.message)
+    })
+
 //module imports
 const errorHandler = require('./middleware/error-handler')
 const Person = require('./models/person')
