@@ -46,8 +46,7 @@ const App = () => {
           setNewNumber('')
           handleNotifications(`${contactObject.name} number was changed successfully.`, true)
         }).catch(error => {
-          handleNotifications(`Entry not found on server.`, false)
-          console.log(`error: ${error}`)
+          handleNotifications(error.response.data.error, false)
         })
       }
     } else {
@@ -62,8 +61,10 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')
-      })
-      handleNotifications(`${contactObject.name} was added successfully.`, true)
+        handleNotifications(`${contactObject.name} was added successfully.`, true)
+      }).catch(error => {
+          handleNotifications(error.response.data.error, false)
+        })
     }
   }
 

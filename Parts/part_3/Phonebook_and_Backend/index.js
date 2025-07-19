@@ -47,7 +47,8 @@ app.post('/api/persons', (request, response, next) => {
         name: request.body.name,
         number: request.body.number
     })
-    newPerson.save().then(savedPerson => {
+    newPerson.save()
+    .then(savedPerson => {
         console.log("Person saved to database")
         response.json(savedPerson)
     })
