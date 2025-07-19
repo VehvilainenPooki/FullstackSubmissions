@@ -44,7 +44,7 @@ const App = () => {
           setPersons(persons)
           setNewName('')
           setNewNumber('')
-          handleNotificationSuccess(`${contactObject.name} number was changed successfully.`)
+          handleNotifications(`${contactObject.name} number was changed successfully.`, true)
         }).catch(error => {
           handleNotifications(`Entry not found on server.`, false)
           console.log(`error: ${error}`)
