@@ -6,6 +6,7 @@ require('dotenv').config()
 //module imports
 const errorHandler = require('./middleware/error-handler')
 const Person = require('./models/person')
+const opts = { runValidators: true };
 
 const app = express()
 
