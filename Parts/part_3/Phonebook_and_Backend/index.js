@@ -24,12 +24,14 @@ app.get('/info', (request, response) => {
         timeStyle: "full",
         dateStyle: "full"
     };
-    response.send(
-        `<p>Phonebook has info for ${persons.length} people</p>\n
-        \n
-        ${(new Date()).toLocaleString("en-GB", options)}
-        `
-    )
+    Person.find({}).then(people =>{
+        response.send(
+            `<p>Phonebook has info for ${people.length} people</p>\n
+            \n
+            ${(new Date()).toLocaleString("en-GB", options)}
+            `
+        )
+    })
 })
 
 app.get('/api/persons', (request, response) => {
