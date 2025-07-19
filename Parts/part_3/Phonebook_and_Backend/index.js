@@ -1,8 +1,10 @@
+//library import
 const cors = require('cors')
 const morgan = require('morgan')
 const express = require('express')
-
 require('dotenv').config()
+//module imports
+const errorHandler = require('./middleware/error-handler')
 const Person = require('./models/person')
 
 const app = express()
@@ -16,29 +18,6 @@ morgan.token('body', request => {
     : '';
 })
 app.use(morgan(':method :url :status :body'))
-
-let persons = [
-    { 
-        "id": "1",
-        "name": "Arto Hellas", 
-        "number": "040-123456"
-    },
-    { 
-        "id": "2",
-        "name": "Ada Lovelace", 
-        "number": "39-44-5323523"
-    },
-    { 
-        "id": "3",
-        "name": "Dan Abramov", 
-        "number": "12-43-234345"
-    },
-    { 
-        "id": "4",
-        "name": "Mary Poppendieck", 
-        "number": "39-23-6423122"
-    }
-]
 
 app.get('/info', (request, response) => {
     const options = {
@@ -57,7 +36,7 @@ app.get('/api/persons', (request, response) => {
     Person.find({}).then(people => {
         response.json(people)
     })
-
+    
 })
 
 app.post('/api/persons', (request, response) => {
@@ -82,29 +61,27 @@ app.post('/api/persons', (request, response) => {
     }
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id).then(person => {
-    if (!person) {
-        response.status(404).send({
-            error: `Person with id: ${id} not found.`
-        })
-    }
-
-    response.json(person)
+        if (!person) {
+            response.status(404).send({
+                error: `Person with id: ${request.params.id} not found.`
+            })
+        }
+        response.json(person)
     })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(p => p.id == id)
-    if (!person) {
-        response.status(404).send({
-            error: `person with id: ${id} not found.`
-        })
-    }
-    persons = persons.filter(p => p.id !== id)
-    response.status(204).end()
+    Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+        response.status(204).end()
+    })
+    .catch(error => next(error))
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT)
