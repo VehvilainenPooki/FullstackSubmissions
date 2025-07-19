@@ -43,8 +43,6 @@ const App = () => {
               setPersons(persons.map(person =>
                 person.id !== contactObject.id ? person : updatedContact
               ))
-          persons[persons.findIndex(person => person.name == contactObject.name)] = contactObject
-          setPersons(persons)
           setNewName('')
           setNewNumber('')
           handleNotifications(`${contactObject.name} number was changed successfully.`, true)
