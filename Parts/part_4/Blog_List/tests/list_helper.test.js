@@ -51,7 +51,7 @@ describe('likes maxing', () => {
 
     test('Show blog with most likes', () => {
         const result = listHelper.favoriteBlog(listWithOneBlog)
-        assert.strictEqual( JSON.stringify(result), 
+        assert.strictEqual( JSON.stringify(result),
             JSON.stringify({
                 _id: '676234d17f85a422aa71b54a',
                 title: 'Considered Harmful Go To Statement',

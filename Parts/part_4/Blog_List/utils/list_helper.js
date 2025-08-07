@@ -1,10 +1,11 @@
 
 const dummy = (blogs) => {
-  return 1
+    blogs = 1
+    return blogs
 }
 
 const totalLikes = (blogs) => {
-    likesSum = 0
+    let likesSum = 0
     blogs.forEach(blog => {
         likesSum = likesSum + blog.likes
     })
@@ -12,7 +13,8 @@ const totalLikes = (blogs) => {
 }
 
 const favoriteBlog = (blogs) => {
-    likesMaxing = 0
+    let likesMaxing = 0
+    let maxBlog = ''
     blogs.forEach(blog => {
         if ( blog.likes > likesMaxing ) {
             likesMaxing = blog.likes
@@ -28,11 +30,11 @@ const mostBlogs = (blogs) => {
     //author: 'name',
     //blogs: 634
     //}
-    blogMax = 0
-    authorMax = ''
-    authors = new Map()
+    let blogMax = 0
+    let authorMax = ''
+    const authors = new Map()
     blogs.forEach(blog => {
-        blogsNumber = authors.get(blog.author)
+        let blogsNumber = authors.get(blog.author)
         if (blogsNumber) {
             authors.set(blog.author, (blogsNumber + 1))
             if (blogMax < blogsNumber + 1) {
@@ -47,7 +49,7 @@ const mostBlogs = (blogs) => {
             }
         }
     })
-    return { author: authorMax, blogs: blogMax}
+    return { author: authorMax, blogs: blogMax }
 
 }
 
@@ -57,11 +59,11 @@ const mostLikes = (blogs) => {
     //author: 'name',
     //blogs: 634
     //}
-    likesMax = 0
-    authorMax = ''
-    authors = new Map()
+    let likesMax = 0
+    let authorMax = ''
+    const authors = new Map()
     blogs.forEach(blog => {
-        likesNumber = authors.get(blog.author)
+        let likesNumber = authors.get(blog.author)
         if (likesNumber) {
             authors.set(blog.author, (likesNumber + blog.likes))
             if (likesMax < likesNumber + blog.likes) {
@@ -76,7 +78,7 @@ const mostLikes = (blogs) => {
             }
         }
     })
-    return {author: maxBlog.author, likes: likesMax}
+    return { author: authorMax, likes: likesMax }
 }
 
 module.exports = {
