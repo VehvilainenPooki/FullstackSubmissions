@@ -53,7 +53,7 @@ after( async () => {
     await mongoose.connection.close()
 })
 
-describe('Test for GET api/blogs', () => {
+describe('GET api/blogs', () => {
     test('blogs are returned as json', async () => {
         await api
             .get('/api/blogs')
@@ -82,11 +82,45 @@ describe('Test for GET api/blogs', () => {
     })
 })
 
-describe('Test for POST api/blogs', () => {
+describe('DELETE api/blogs', () => {
+    test('DELETE deletes blog with correct id', async () => {
+        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(204)
+
+        const response = await api.get('/api/blogs')
+        assert.strictEqual(response.body.length, 2)
+    })
+
+    test('DELETE returns 204 for a nonexistent blog', async () => {
+        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(204)
+    })
+})
+
+describe('PUT api/blogs', () => {
+    test('PUT edits entry with correct input', async () => {
+        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(204)
+
+        const response = await api.get('/api/blogs')
+        const blog = response.body.find(blog => blog.id === '6885c5ed159427e5faeee8ac')
+        delete blog['id']
+        assert.strictEqual(toString(blog), toString(newBlog))
+    })
+
+    test('PUT succeeds with empty blog (id leads to no blog)', async () => {
+        await api.put('/api/blogs/688613ab2db00f26566b922f').send(newBlog).expect(404)
+    })
+
+    test('PUT throws 400 with malformed input', async () => {
+        newBlog['url'] = ''
+        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(400)
+        newBlog['url'] = 'TheNewNew'
+    })
+})
+
+describe('POST api/blogs', () => {
     beforeEach(async () => {
         await Blog.deleteMany({})
     })
-    test('POST returned blogs', async () => {
+    test('POST adds blog with correct data', async () => {
         const response = await api.post('/api/blogs').send(newBlog).expect(201)
         const blog = response.body
         assert.notEqual(blog.id,  undefined)
@@ -113,3 +147,4 @@ describe('Test for POST api/blogs', () => {
         await api.post('/api/blogs').send(newBlog).expect(400)
     })
 })
+
