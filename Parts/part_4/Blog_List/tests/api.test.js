@@ -35,6 +35,13 @@ const initialBlogs = [
     }
 ]
 
+const newBlog = {
+    'title': 'The New Thing',
+    'author': 'New Guy',
+    'url': 'TheNewNew.com',
+    'likes': 512,
+}
+
 beforeEach(async () => {
     await Blog.deleteMany({})
     for (const blog of initialBlogs) {
@@ -72,6 +79,16 @@ describe('Test for GET api/blogs', () => {
 
         const ids = response.body.map(blog => blog.id)
         assert(ids.includes('688613ab2db99f26566b922f'))
+    })
+})
+
+describe('Test for POST api/blogs', () => {
+    test('POST returned blogs', async () => {
+        const response = await api.post('/api/blogs').send(newBlog).expect(201)
+        const blog = response.body
+        assert.notEqual(blog.id,  undefined)
+        delete blog['id']
+        assert.strictEqual(toString(blog), toString(newBlog))
         await mongoose.connection.close()
     })
 })
