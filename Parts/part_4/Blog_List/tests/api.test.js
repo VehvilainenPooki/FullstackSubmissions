@@ -83,12 +83,23 @@ describe('Test for GET api/blogs', () => {
 })
 
 describe('Test for POST api/blogs', () => {
+    beforeEach(async () => {
+        await Blog.deleteMany({})
+    })
     test('POST returned blogs', async () => {
         const response = await api.post('/api/blogs').send(newBlog).expect(201)
         const blog = response.body
         assert.notEqual(blog.id,  undefined)
         delete blog['id']
         assert.strictEqual(toString(blog), toString(newBlog))
+
+    })
+
+    test('POST with no likes field defaults to 0 likes', async () => {
+        delete newBlog['likes']
+        const response = await api.post('/api/blogs').send(newBlog).expect(201)
+        const blog = response.body
+        assert.equal(blog.likes,  0)
         await mongoose.connection.close()
     })
 })
