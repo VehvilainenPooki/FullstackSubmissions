@@ -100,6 +100,16 @@ describe('Test for POST api/blogs', () => {
         const response = await api.post('/api/blogs').send(newBlog).expect(201)
         const blog = response.body
         assert.equal(blog.likes,  0)
-        await mongoose.connection.close()
+    })
+
+    test('POST without url', async () => {
+        delete newBlog['url']
+        await api.post('/api/blogs').send(newBlog).expect(400)
+    })
+
+    test('POST without title', async () => {
+        delete newBlog['title']
+        newBlog['url'] = 'testing.com'
+        await api.post('/api/blogs').send(newBlog).expect(400)
     })
 })
