@@ -66,4 +66,12 @@ describe('Test for GET api/blogs', () => {
         const titles = response.body.map(blog => blog.title)
         assert(titles.includes('Popular'))
     })
+
+    test('id is id not _id within the returned blogs', async () => {
+        const response = await api.get('/api/blogs')
+
+        const ids = response.body.map(blog => blog.id)
+        assert(ids.includes('688613ab2db99f26566b922f'))
+        await mongoose.connection.close()
+    })
 })
