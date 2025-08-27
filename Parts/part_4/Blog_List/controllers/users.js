@@ -1,0 +1,40 @@
+const bcrypt = require('bcryptjs')
+const usersRouter = require('express').Router()
+const User = require('../models/user')
+const { SALT_ROUNDS } = require('../utils/config')
+
+usersRouter.get('/', async (request, response) => {
+    const blogs = await User.find({})
+    response.json(blogs)
+})
+
+usersRouter.post('/', async (request, response) => {
+    const { username, password, name } = await request.body
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS)
+    const user = new User({ username, passwordHash, name })
+
+    const result = await user.save()
+    response.status(201).json(result)
+})
+
+//usersRouter.put('/:id', async (request, response) => {
+//    const result = await User.findByIdAndUpdate(
+//        request.params.id,
+//        request.body,
+//        { 'runValidators':true }
+//    )
+//    if (!result) {
+//        return response.status(404).end()
+//    }
+//    response.status(204).end()
+//})
+//
+//usersRouter.delete('/:id', async (request, response) => {
+//    const result = await User.findByIdAndDelete(request.params.id)
+//    if (!result) {
+//        return response.status(404).end()
+//    }
+//    response.status(204).end()
+//})
+
+module.exports = usersRouter
