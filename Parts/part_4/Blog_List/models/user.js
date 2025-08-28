@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         message: 'Name missing'
     },
-    notes: [
+    blogs: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'blog'
