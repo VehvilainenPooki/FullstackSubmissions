@@ -13,7 +13,7 @@ const initialUsers = [
         'username': 'Stringer',
         'passwordHash': '$2b$10$T.DAVBfVlVKjuBaTxvhl7u5X8V7WZA4KoKxsDh.lS80XhD057rVrG',
         'name': 'StringerLinger.com',
-        'notes': [],
+        'blogs': [],
         '_id': '68af6f30e3bd5421ee84dfe7',
         '__v': 0
     },
@@ -21,7 +21,7 @@ const initialUsers = [
         'username': 'pentest',
         'passwordHash': '$2b$10$BbWJx2qB04GD0GIXp2Q.8OeSDZ5U1SgIZs85VaNfxUhPLD0Qoiyv6',
         'name': 'Penetration Tester',
-        'notes': [],
+        'blogs': [],
         '_id': '68af7c0e3e1ed76e3c5a9f9b',
         '__v': 0
     },
@@ -29,7 +29,7 @@ const initialUsers = [
         'username': 'duck',
         'passwordHash': '$2b$10$goK/26.0qtgHayN4PgfIb.GiiiNmHs2/RggtNHbcjxS7eytJqUV6K',
         'name': 'Donald Duck',
-        'notes': [],
+        'blogs': [],
         '_id': '68af7e39b94acdc579913b8d',
         '__v': 0
     },
@@ -37,17 +37,17 @@ const initialUsers = [
         'username': 'calcato',
         'passwordHash': '$2b$10$SetoZ7UAlLy3M9LId4nxLemBb9.s14wOiS0aDwVNmRVHE6Ra/5pEK',
         'name': 'calcato Maganado',
-        'notes': [],
+        'blogs': [],
         '_id': '68af7e63b94acdc579913b8f',
         '__v': 0
     }
 ]
 
-//const newUser = {
-//    'username': 'The New Thing',
-//    'passwordHash': 'New Guy',
-//    'name': 'TheNewNew.com'
-//}
+var newUser = {
+    'username': 'testaaja',
+    'passwordHash': 'Salainen salaisuus123',
+    'name': 'Hyvin Testaa',
+}
 
 beforeEach(async () => {
     await User.deleteMany({})
@@ -98,69 +98,78 @@ describe('GET api/users', () => {
     })
 })
 
+describe('POST api/users', () => {
+    beforeEach(async () => {
+        newUser = {
+            'username': 'testaaja',
+            'password': 'Salainen salaisuus123',
+            'name': 'Hyvin Testaa',
+        }
+        await User.deleteMany({})
+    })
+    test('POST adds user with correct data', async () => {
+        const response = await api.post('/api/users').send(newUser).expect(201)
+        const user = response.body
+        assert.notEqual(user.id,  undefined)
+        delete user['id']
+        delete user['blogs']
+        delete newUser['password']
+        assert.strictEqual(toString(user), toString(newUser))
+
+    })
+
+    test('POST with too short username', async () => {
+        newUser['username'] = 'js'
+        await api.post('/api/users').send(newUser).expect(400)
+    })
+
+    test('POST with too short password', async () => {
+        newUser['password'] = 'pw'
+        await api.post('/api/users').send(newUser).expect(400)
+    })
+
+    test('POST without username', async () => {
+        delete newUser['username']
+        await api.post('/api/users').send(newUser).expect(400)
+    })
+
+    test('POST without password', async () => {
+        delete newUser['password']
+        await api.post('/api/users').send(newUser).expect(400)
+    })
+})
+
 //describe('DELETE api/users', () => {
-//    test('DELETE deletes blog with correct id', async () => {
-//        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(204)
+//    test('DELETE deletes user with correct id', async () => {
+//        await api.delete('/api/users/688613ab2db99f26566b922f').expect(204)
 //
-//        const response = await api.get('/api/blogs')
+//        const response = await api.get('/api/users')
 //        assert.strictEqual(response.body.length, 2)
 //    })
 //
-//    test('DELETE returns 204 for a nonexistent blog', async () => {
-//        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(204)
+//    test('DELETE returns 204 for a nonexistent user', async () => {
+//        await api.delete('/api/users/688613ab2db99f26566b922f').expect(204)
 //    })
 //})
 //
 //describe('PUT api/users', () => {
 //    test('PUT edits entry with correct input', async () => {
-//        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(204)
+//        await api.put('/api/users/6885c5ed159427e5faeee8ac').send(newUser).expect(204)
 //
-//        const response = await api.get('/api/blogs')
-//        const blog = response.body.find(blog => blog.id === '6885c5ed159427e5faeee8ac')
-//        delete blog['id']
-//        assert.strictEqual(toString(blog), toString(newBlog))
+//        const response = await api.get('/api/users')
+//        const user = response.body.find(user => user.id === '6885c5ed159427e5faeee8ac')
+//        delete user['id']
+//        assert.strictEqual(toString(user), toString(newUser))
 //    })
 //
-//    test('PUT succeeds with empty blog (id leads to no blog)', async () => {
-//        await api.put('/api/blogs/688613ab2db00f26566b922f').send(newBlog).expect(404)
+//    test('PUT succeeds with empty user (id leads to no user)', async () => {
+//        await api.put('/api/users/688613ab2db00f26566b922f').send(newUser).expect(404)
 //    })
 //
 //    test('PUT throws 400 with malformed input', async () => {
-//        newBlog['url'] = ''
-//        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(400)
-//        newBlog['url'] = 'TheNewNew'
+//        newUser['url'] = ''
+//        await api.put('/api/users/6885c5ed159427e5faeee8ac').send(newUser).expect(400)
+//        newUser['url'] = 'TheNewNew'
 //    })
 //})
 //
-//describe('POST api/users', () => {
-//    beforeEach(async () => {
-//        await Blog.deleteMany({})
-//    })
-//    test('POST adds blog with correct data', async () => {
-//        const response = await api.post('/api/blogs').send(newBlog).expect(201)
-//        const blog = response.body
-//        assert.notEqual(blog.id,  undefined)
-//        delete blog['id']
-//        assert.strictEqual(toString(blog), toString(newBlog))
-//
-//    })
-//
-//    test('POST with no likes field defaults to 0 likes', async () => {
-//        delete newBlog['likes']
-//        const response = await api.post('/api/blogs').send(newBlog).expect(201)
-//        const blog = response.body
-//        assert.equal(blog.likes,  0)
-//    })
-//
-//    test('POST without url', async () => {
-//        delete newBlog['url']
-//        await api.post('/api/blogs').send(newBlog).expect(400)
-//    })
-//
-//    test('POST without title', async () => {
-//        delete newBlog['title']
-//        newBlog['url'] = 'testing.com'
-//        await api.post('/api/blogs').send(newBlog).expect(400)
-//    })
-//})
-
