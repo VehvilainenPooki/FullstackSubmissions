@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const config = require('./utils/config')
+const token_extractor = require('./utils/token_extractor')
 const logger = require('./utils/logger')
 const error_handler = require('./utils/error_handler')
 const blogRouter = require('./controllers/blogs')
@@ -10,7 +11,7 @@ const loginRouter = require('./controllers/login')
 
 const app = express()
 
-//logger.info('connecting to', config.MONGO_URI)
+app.use(token_extractor)
 
 mongoose
     .connect(config.MONGO_URI)
