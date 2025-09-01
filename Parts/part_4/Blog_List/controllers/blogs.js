@@ -32,13 +32,12 @@ blogsRouter.put('/:id', async (request, response) => {
     if (!request.user) {
         return response.status(400).json({ error: 'userId missing or not valid' })
     }
-    const blogToBeUpdated = await Blog.findById()
+    const blogToBeUpdated = await Blog.findById(request.params.id)
     if (!blogToBeUpdated) {
         return response.status(404).end()
     }
     if (blogToBeUpdated.user.toString() === request.user.id) {
         await blogToBeUpdated.updateOne(
-            request.params.id,
             request.body,
             { 'runValidators':true }
         )

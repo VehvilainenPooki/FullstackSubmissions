@@ -14,6 +14,7 @@ const initialBlogs = [
         'title': 'Popular',
         'author': 'Cool Dude',
         'url': 'CoolPopular.com',
+        'user': '68af6f30e3bd5421ee84dfe7',
         'likes': 256,
         '__v': 0
     },
@@ -22,6 +23,7 @@ const initialBlogs = [
         'title': 'Known',
         'author': 'Normal guy',
         'url': 'NormalKnown.com',
+        'user': '68af6f30e3bd5421ee84dfe7',
         'likes': 128,
         '__v': 0
     },
@@ -30,6 +32,7 @@ const initialBlogs = [
         'title': 'Unknown',
         'author': 'Niche Andy',
         'url': 'NicheUnknown.com',
+        'user': '68af6f30e3bd5421ee84dfe7',
         'likes': 64,
         '__v': 0
     }
@@ -39,6 +42,7 @@ const newBlog = {
     'title': 'The New Thing',
     'author': 'New Guy',
     'url': 'TheNewNew.com',
+    'user': '68af6f30e3bd5421ee84dfe7',
     'likes': 512,
 }
 
@@ -83,35 +87,35 @@ describe('GET api/blogs', () => {
 })
 
 describe('DELETE api/blogs', () => {
-    test('DELETE deletes blog with correct id', async () => {
-        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(204)
+    test('DELETE deletes blog with correct id UNAUTH 401', async () => {
+        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(401)
 
         const response = await api.get('/api/blogs')
-        assert.strictEqual(response.body.length, 2)
+        assert.strictEqual(response.body.length, 3)
     })
 
-    test('DELETE returns 204 for a nonexistent blog', async () => {
-        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(204)
+    test('DELETE returns 204 for a nonexistent blog UNAUTH 401', async () => {
+        await api.delete('/api/blogs/688613ab2db99f26566b922f').expect(401)
     })
 })
 
 describe('PUT api/blogs', () => {
-    test('PUT edits entry with correct input', async () => {
-        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(204)
+    test('PUT edits entry with correct input UNAUTH 401', async () => {
+        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(401)
 
         const response = await api.get('/api/blogs')
-        const blog = response.body.find(blog => blog.id === '6885c5ed159427e5faeee8ac')
-        delete blog['id']
-        assert.strictEqual(toString(blog), toString(newBlog))
+        assert((response.body.find(blog => blog.author === 'Normal guy')))
+        assert(!(response.body.find(blog => blog.author === 'New Guy')))
+
     })
 
-    test('PUT succeeds with empty blog (id leads to no blog)', async () => {
-        await api.put('/api/blogs/688613ab2db00f26566b922f').send(newBlog).expect(404)
+    test('PUT succeeds with empty blog (id leads to no blog) UNAUTH 401', async () => {
+        await api.put('/api/blogs/688613ab2db00f26566b922f').send(newBlog).expect(401)
     })
 
-    test('PUT throws 400 with malformed input', async () => {
+    test('PUT throws 400 with malformed input UNAUTH 401', async () => {
         newBlog['url'] = ''
-        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(400)
+        await api.put('/api/blogs/6885c5ed159427e5faeee8ac').send(newBlog).expect(401)
         newBlog['url'] = 'TheNewNew'
     })
 })
@@ -120,31 +124,26 @@ describe('POST api/blogs', () => {
     beforeEach(async () => {
         await Blog.deleteMany({})
     })
-    test('POST adds blog with correct data', async () => {
-        const response = await api.post('/api/blogs').send(newBlog).expect(201)
+    test('POST adds blog with correct data UNAUTH 401', async () => {
+        const response = await api.post('/api/blogs').send(newBlog).expect(401)
         const blog = response.body
-        assert.notEqual(blog.id,  undefined)
-        delete blog['id']
-        assert.strictEqual(toString(blog), toString(newBlog))
-
+        assert.equal(blog.id,  undefined)
     })
 
-    test('POST with no likes field defaults to 0 likes', async () => {
+    test('POST with no likes field defaults to 0 likes UNAUTH 401', async () => {
         delete newBlog['likes']
-        const response = await api.post('/api/blogs').send(newBlog).expect(201)
-        const blog = response.body
-        assert.equal(blog.likes,  0)
+        await api.post('/api/blogs').send(newBlog).expect(401)
     })
 
-    test('POST without url', async () => {
+    test('POST without url UNAUTH 401', async () => {
         delete newBlog['url']
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api.post('/api/blogs').send(newBlog).expect(401)
     })
 
-    test('POST without title', async () => {
+    test('POST without title UNAUTH 401', async () => {
         delete newBlog['title']
         newBlog['url'] = 'testing.com'
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api.post('/api/blogs').send(newBlog).expect(401)
     })
 })
 
