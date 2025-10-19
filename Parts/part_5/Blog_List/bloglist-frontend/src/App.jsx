@@ -16,6 +16,7 @@ const App = () => {
     const [url, setUrl] = useState('')
     const [notificationMessage, setNotificationMessage] = useState('Blog app')
     const [messageState, setMessageState] = useState('idle')
+    const [showBlogForm, setShowBlogForm] = useState(false)
 
     const State = Object.freeze({
         IDLE: 'idle',
@@ -87,6 +88,14 @@ const App = () => {
             setNotificationMessage('Blog app')
             setMessageState(State.IDLE)
         }, 5000)
+    }
+
+    const handleShowBlogForm = () => {
+        if (showBlogForm) {
+            setShowBlogForm(false)
+        } else {
+            setShowBlogForm(true)
+        }
     }
 
     const loginForm = () => (
@@ -176,7 +185,14 @@ const App = () => {
                     handleNotifications('Logged out successfully', State.SUCCESS)
                 }}>Logout</button>
             </p>
-            {blogForm()}
+            {showBlogForm ? (
+                <div>
+                    {blogForm()}
+                    <button onClick={handleShowBlogForm}>cancel</button>
+                </div>
+            ) : (
+                <button onClick={handleShowBlogForm}>create new blog</button>
+            )}
             {blogList()}
         </div>
     )
