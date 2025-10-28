@@ -1,22 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
     const [notificationMessage, setNotificationMessage] = useState('Blog app')
     const [messageState, setMessageState] = useState('idle')
-    const [showBlogForm, setShowBlogForm] = useState(false)
+
+    const blogToggleRef = useRef()
+    const blogFormRef = useRef()
 
     const State = Object.freeze({
         IDLE: 'idle',
@@ -58,20 +59,13 @@ const App = () => {
         }
     }
 
-    const handleNewBlog = async (event) => {
-        event.preventDefault()
-        const newBlog = {
-            title: title,
-            author: author,
-            url: url
-        }
+    const handleNewBlog = async (newBlog) => {
         try {
             const response = await blogService.create(newBlog)
-            setTitle('')
-            setAuthor('')
-            setUrl('')
             setBlogs(blogs.concat(response))
             handleNotifications('Blog created successfully', State.SUCCESS)
+            blogToggleRef.current.toggleVisibility()
+            blogFormRef.current.resetFields()
         } catch(err) {
             if (err.status === 400) {
                 handleNotifications('Title or URL missing or invalid', State.ERROR)
@@ -88,14 +82,6 @@ const App = () => {
             setNotificationMessage('Blog app')
             setMessageState(State.IDLE)
         }, 5000)
-    }
-
-    const handleShowBlogForm = () => {
-        if (showBlogForm) {
-            setShowBlogForm(false)
-        } else {
-            setShowBlogForm(true)
-        }
     }
 
     const loginForm = () => (
@@ -127,45 +113,6 @@ const App = () => {
         </div>
     )
 
-    const blogForm = () => (
-        <div>
-            <h2>create new</h2>
-            <form onSubmit={handleNewBlog}>
-                <div>
-                    <label>
-                        title
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={({ target }) => setTitle(target.value)}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        author
-                        <input
-                            type="author"
-                            value={author}
-                            onChange={({ target }) => setAuthor(target.value)}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        url
-                        <input
-                            type="url"
-                            value={url}
-                            onChange={({ target }) => setUrl(target.value)}
-                        />
-                    </label>
-                </div>
-                <button type="submit">create</button>
-            </form>
-        </div>
-    )
-
     const blogList = () => (
         <div>
             <h2>blogs</h2>
@@ -185,14 +132,9 @@ const App = () => {
                     handleNotifications('Logged out successfully', State.SUCCESS)
                 }}>Logout</button>
             </p>
-            {showBlogForm ? (
-                <div>
-                    {blogForm()}
-                    <button onClick={handleShowBlogForm}>cancel</button>
-                </div>
-            ) : (
-                <button onClick={handleShowBlogForm}>create new blog</button>
-            )}
+            <Togglable buttonLabel="create new blog" ref={blogToggleRef}>
+                <BlogForm createBlog={handleNewBlog} ref={blogFormRef}/>
+            </Togglable>
             {blogList()}
         </div>
     )
