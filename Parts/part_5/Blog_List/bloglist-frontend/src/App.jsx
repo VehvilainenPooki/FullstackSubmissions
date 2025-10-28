@@ -93,6 +93,7 @@ const App = () => {
                         username
                         <input
                             type="text"
+                            autoComplete='username'
                             value={username}
                             onChange={({ target }) => setUsername(target.value)}
                         />
@@ -103,6 +104,7 @@ const App = () => {
                         password
                         <input
                             type="password"
+                            autoComplete='current-password'
                             value={password}
                             onChange={({ target }) => setPassword(target.value)}
                         />
