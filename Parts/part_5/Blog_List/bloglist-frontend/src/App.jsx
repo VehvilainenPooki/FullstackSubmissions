@@ -79,19 +79,19 @@ const App = () => {
         try {
             const updatedBlog = await blogService.like(blog)
             setBlogs(blogs
-                        .map(blog => blog.id === updatedBlog.id ? updatedBlog : blog)
-                        .sort((a, b) => b.likes - a.likes)
+                .map(blog => blog.id === updatedBlog.id ? updatedBlog : blog)
+                .sort((a, b) => b.likes - a.likes)
             )
-        } catch(err) {
+        } catch {
             handleNotifications('Failed to like blog', State.ERROR)
         }
     }
 
     const handleRemove = async (blog) => {
         try {
-            const updatedBlog = await blogService.remove(blog)
+            await blogService.remove(blog)
             setBlogs(blogs.filter(b => b.id !== blog.id))
-        } catch(err) {
+        } catch {
             handleNotifications('Failed to like blog', State.ERROR)
         }
     }

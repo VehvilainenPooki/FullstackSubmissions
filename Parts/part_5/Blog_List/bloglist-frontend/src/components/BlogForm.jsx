@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle } from 'react'
 
-const BlogForm = ({createBlog, ref}) => {
+const BlogForm = ({ createBlog, ref }) => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
@@ -13,7 +13,7 @@ const BlogForm = ({createBlog, ref}) => {
             url: url
         }
         createBlog(newBlog)
-    } 
+    }
 
     const resetFields = () => {
         setTitle('')
