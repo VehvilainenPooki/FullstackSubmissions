@@ -51,4 +51,12 @@ export default [
             'eol-last': ['error', 'always']
         },
     },
+    {
+        files: ['**/*.test.{js,jsx}'],
+        languageOptions: {
+            globals: {
+                ...globals.vitest
+            }
+        }
+    },
 ]
