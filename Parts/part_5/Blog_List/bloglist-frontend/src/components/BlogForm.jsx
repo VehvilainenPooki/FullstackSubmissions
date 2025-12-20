@@ -43,7 +43,7 @@ const BlogForm = ({ createBlog, ref }) => {
                     <label>
                         author
                         <input
-                            type="author"
+                            type="text"
                             value={author}
                             onChange={({ target }) => setAuthor(target.value)}
                         />
