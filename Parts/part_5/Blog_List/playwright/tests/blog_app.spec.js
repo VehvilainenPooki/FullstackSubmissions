@@ -10,6 +10,13 @@ describe('Blog App e2e', () => {
                 password: 'salainen'
             }
         })
+        await request.post('http://localhost:3003/api/users', {
+            data: {
+                name: 'Antti Laaksonen',
+                username: 'alaakson',
+                password: 'salasala'
+            }
+        })
         await page.goto('http://localhost:5173')
     })
     describe('Homepage', () => {
@@ -89,6 +96,20 @@ describe('Blog App e2e', () => {
             await page.getByRole('button', { name: 'remove' }).click()
             await expect(page.getByText('This is title Author name')).toBeHidden()
         })
+        test('Blog can\'t be deleted by others', async ({ page }) => {
+            await page.getByRole('button', { name: 'create new blog' }).click()
+            await page.getByLabel('title').fill("This is title")
+            await page.getByLabel('author').fill("Author name")
+            await page.getByLabel('url').fill("https://url.xyz")
+            await page.getByRole('button', { name: 'create' }).click()
+            await page.getByRole('button', { name: 'logout' }).click()
 
+            await page.getByLabel('username').fill('alaakson')
+            await page.getByLabel('password').fill('salasala')
+            await page.getByRole('button', { name: 'login' }).click()
+            await page.getByRole('button', { name: 'view' }).click()
+            await expect(page.getByText('This is title Author name')).toBeVisible()
+            await expect(page.getByText('remove')).toBeHidden()
+        })
     })
 })
