@@ -12,19 +12,21 @@ describe('Blog App e2e', () => {
         })
         await page.goto('http://localhost:5173')
     })
-    test('front page can be opened', async ({ page }) => {
-        const locator = page.getByText('Blog app')
-        await expect(locator).toBeVisible()
-        await expect(page.getByText('Log in to application')).toBeVisible()
-    })
-    test('Login form is shown by default', async ({ page }) => {
-        const username = page.getByLabel('username')
-        const password = page.getByLabel('password')
-        await expect(page.getByText('Log in to application')).toBeVisible()
-        await expect(username).toBeVisible()
-        await expect(username).toBeEditable()
-        await expect(password).toBeVisible()
-        await expect(password).toBeEditable()
+    describe('Homepage', () => {
+        test('front page can be opened', async ({ page }) => {
+            const locator = page.getByText('Blog app')
+            await expect(locator).toBeVisible()
+            await expect(page.getByText('Log in to application')).toBeVisible()
+        })
+        test('Login form is shown by default', async ({ page }) => {
+            const username = page.getByLabel('username')
+            const password = page.getByLabel('password')
+            await expect(page.getByText('Log in to application')).toBeVisible()
+            await expect(username).toBeVisible()
+            await expect(username).toBeEditable()
+            await expect(password).toBeVisible()
+            await expect(password).toBeEditable()
+        })
     })
 
     describe('Login', () => {
@@ -46,6 +48,23 @@ describe('Blog App e2e', () => {
             await page.getByRole('button', { name: 'login' }).click()
             await expect(page.getByText('successful login')).toBeVisible()
             await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+        })
+    })
+
+    describe('When logged in', async () => {
+        beforeEach(async ({ page }) => {
+            await page.getByLabel('username').fill('mluukkai')
+            await page.getByLabel('password').fill('salainen')
+            await page.getByRole('button', { name: 'login' }).click()
+        })
+        test('Blog form works with correct info', async ({ page }) => {
+            await page.getByRole('button', { name: 'create new blog' }).click()
+            await page.getByLabel('title').fill("This is title")
+            await page.getByLabel('author').fill("Author name")
+            await page.getByLabel('url').fill("https://url.xyz")
+            await page.getByRole('button', { name: 'create' }).click()
+            await expect(page.getByText('Blog created successfully')).toBeVisible()
+            await expect(page.getByText('This is title Author name')).toBeVisible()
         })
     })
 })
