@@ -79,6 +79,16 @@ describe('Blog App e2e', () => {
             await page.getByRole('button', { name: 'like' }).click()
             await expect(page.getByText('2')).toBeVisible()
         })
+        test('Blog can be deleted by the creator', async ({ page }) => {
+            await page.getByRole('button', { name: 'create new blog' }).click()
+            await page.getByLabel('title').fill("This is title")
+            await page.getByLabel('author').fill("Author name")
+            await page.getByLabel('url').fill("https://url.xyz")
+            await page.getByRole('button', { name: 'create' }).click()
+            await page.getByRole('button', { name: 'view' }).click()
+            await page.getByRole('button', { name: 'remove' }).click()
+            await expect(page.getByText('This is title Author name')).toBeHidden()
+        })
 
     })
 })
