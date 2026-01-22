@@ -15,11 +15,12 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const Anecdotes = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => state.anecdotes)
+  const filter = useSelector(state => state.filter)
 
   return (
     <div>
-      {anecdotes.map(anecdote => (
+      {anecdotes.filter(anecdote => anecdote.content.includes(filter)).map(anecdote => (
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
