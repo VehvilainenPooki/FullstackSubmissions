@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { filterChange } from '../reducers/filterReducer'
+import { setFilter } from '../reducers/filterReducer'
 
 const SearchFilter = () => {
   const dispatch = useDispatch()
@@ -10,7 +10,7 @@ const SearchFilter = () => {
       <input
         type="text"
         name="filter"
-        onChange={({ target: { value } }) => dispatch(filterChange(value))}
+        onChange={({ target: { value } }) => dispatch(setFilter(value))}
       />
     </div>
   )
