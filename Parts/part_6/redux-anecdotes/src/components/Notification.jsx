@@ -9,17 +9,6 @@ const Notification = () => {
   const notification = useSelector(state => state.notification)
   const timeoutRef = useRef(null)
 
-  useEffect(() => {
-    if (notification) {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-      timeoutRef.current = setTimeout(() => {
-        dispatch(removeNotification())
-      }, 5000)
-    }
-  }, [notification])
-
   const style = {
     border: 'solid',
     padding: 10,
@@ -32,8 +21,8 @@ const Notification = () => {
     marginBottom: 10
   }
 
-  if (notification) {
-    return <div style={ style }>{ notification }</div>
+  if (notification.message) {
+    return <div style={ style }>{ notification.message }</div>
   } else {
     return <div style={emptyStyle}></div>
   }

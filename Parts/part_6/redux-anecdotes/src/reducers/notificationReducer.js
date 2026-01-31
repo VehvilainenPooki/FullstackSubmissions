@@ -1,17 +1,37 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, current } from "@reduxjs/toolkit"
 
 const notificationSlice = createSlice({
-  name: 'filter',
-  initialState: 'This is a notification!',
+  name: 'notification',
+  initialState: {
+    message: '',
+    counter: 0
+  },
   reducers: {
     setNotification(state, action) {
-      return action.payload || ''
+      return {
+        message: action.payload,
+        counter: current(state).counter + 1
+      }
     },
-    removeNotification() {
-      return ''
+    removeNotification(state, action) {
+      if (action.payload === current(state).counter) {
+        return { message: '', counter: 0 }
+      }
+      return state
     }
   }
 })
+
+export const createNotification = (text, time) => {
+  return async (dispatch, getState) => {
+    const counter = getState().notification.counter
+    dispatch(setNotification(text))
+    
+    setTimeout(() => {
+      dispatch(removeNotification(counter + 1))
+    }, time * 1000)
+  }
+}
 
 export const { setNotification, removeNotification } = notificationSlice.actions
 export default notificationSlice.reducer
