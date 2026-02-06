@@ -14,6 +14,10 @@ const App = () => {
     mutationFn: createAnecdote,
     onSuccess: (newAnecdote) => {
       queryClient.setQueryData(['anecdotes'], (old) => [...old, newAnecdote])
+    },
+    onError: (error) => {
+      console.log(error)
+      notifDispatch({type: 'NEW', payload: `too short anecdote. must have length 5 or more`})
     }
   })
 
